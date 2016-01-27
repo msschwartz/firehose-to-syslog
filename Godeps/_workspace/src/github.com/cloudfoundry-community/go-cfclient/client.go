@@ -128,12 +128,14 @@ func NewClient(config *Config) *Client {
 
 	token, err := authConfig.PasswordCredentialsToken(ctx, config.Username, config.Password)
 
+	//	authConfig.AuthCodeURL("test", oauth2.AccessTypeOffline)
+
 	if err != nil {
 		log.Printf("Error getting token %v\n", err)
 	}
 
-	config.HttpClient = authConfig.Client(ctx, token)
 	config.TokenSource = authConfig.TokenSource(ctx, token)
+	config.HttpClient = oauth2.NewClient(ctx, config.TokenSource)
 
 	client := &Client{
 		config:   *config,
